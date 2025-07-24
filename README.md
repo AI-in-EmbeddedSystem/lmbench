@@ -46,16 +46,16 @@ cd src && make lmbench OS=aarch64 CC=aarch64-linux-gnu-gcc LDFLAGS=--static DEBU
 ```
 # debug for systrace (only for bw_mem rd case)
 ```bash
-# open tracing_mark_write and trace switch
+# open tracing_mark_write switch
 echo 'trace_printk' > /sys/kernel/tracing/trace_options
 echo 'markers' > /sys/kernel/tracing/trace_options
 echo 1 > /sys/kernel/tracing/tracing_on
 
-# 使用ftrace验证是否有输出（若有输出bw_mem，表明systrace log加入成功）
+# 使用ftrace验证是否有输出（后面执行bw_mem查看带宽，若有输出bw_mem，表明systrace log加入成功）
 cat /sys/kernel/tracing/trace_pipe | grep tracing_mark_write
 
-# 在其他shell窗口执行，
-./bw_mem_systrace -P 8  1m rd
+# 在其他adb shell窗口执行，
+./bw_mem -P 8  1m rd
 
 # 抓住sysrace，使用scripts/perfetto.sh，在PC侧执行
 cd scripts && ./perfetto.sh
