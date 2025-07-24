@@ -1825,4 +1825,3 @@ void trace_end(const char* message) {
   write(trace_marker_fd, buf, length);
 }
 #endif
-ls 
