@@ -57,6 +57,6 @@ cat /sys/kernel/tracing/trace_pipe | grep tracing_mark_write
 # 在其他shell窗口执行，
 ./bw_mem_systrace -P 8  1m rd
 
-# 抓住sysrace使用perfetto.sh
-
+# 抓住sysrace，使用scripts/perfetto.sh，在PC侧执行
+cd scripts && ./perfetto.sh
 ```
