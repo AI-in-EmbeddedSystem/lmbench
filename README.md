@@ -51,7 +51,7 @@ echo 'trace_printk' > /sys/kernel/tracing/trace_options
 echo 'markers' > /sys/kernel/tracing/trace_options
 echo 1 > /sys/kernel/tracing/tracing_on
 
-# 使用ftrace验证是否有输出（有输出，表明systrace log加入成功）
+# 使用ftrace验证是否有输出（若有输出bw_mem，表明systrace log加入成功）
 cat /sys/kernel/tracing/trace_pipe | grep tracing_mark_write
 
 # 在其他shell窗口执行，
