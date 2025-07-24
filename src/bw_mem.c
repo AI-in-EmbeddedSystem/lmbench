@@ -201,6 +201,14 @@ rd(iter_t iterations, void *cookie)
 	register TYPE *lastone = state->lastone;
 	register int sum = 0;
 
+#ifdef SYSTRACE
+	char buf[64] = {0};
+
+	sprintf(buf, "%lu\n", iterations);
+
+	trace_begin(buf);
+#endif
+
 	while (iterations-- > 0) {
 	    register TYPE *p = state->buf;
 	    while (p <= lastone) {
@@ -215,6 +223,11 @@ rd(iter_t iterations, void *cookie)
 		p +=  128;
 	    }
 	}
+
+#ifdef SYSTRACE
+	trace_end(buf);
+#endif
+
 	use_int(sum);
 }
 #undef	DOIT
@@ -454,9 +467,17 @@ void adjusted_bandwidth(uint64 time, uint64 bytes, uint64 iter, double overhd)
 
         if (!ftiming) ftiming = stderr;
 	if (mb < 1.) {
+#ifdef _DEBUG
+		(void) fprintf(ftiming, "[cpu: %d pid: %d] %.6fMB, time: %d, iter: %d, overhd: %d \n", sched_getcpu(), getpid(), mb, time, iter, overhd);
+#else
 		(void) fprintf(ftiming, "%.6f ", mb);
+#endif
 	} else {
+#ifdef _DEBUG
+		(void) fprintf(ftiming, "[cpu: %d pid: %d] %.2fMB, time: %d, iter: %d, overhd: %d \n", sched_getcpu(), getpid(), mb, time, iter, overhd);
+#else
 		(void) fprintf(ftiming, "%.2f ", mb);
+#endif
 	}
 	if (mb / secs < 1.) {
 		(void) fprintf(ftiming, "%.6f\n", mb/secs);

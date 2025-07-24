@@ -60,6 +60,21 @@ SAMPLES=lmbench/Results/aix/rs6000 lmbench/Results/hpux/snake \
 
 COMPILE=$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
+# debug switch from command line 
+ifdef DEBUG
+COMPILE += -D_DEBUG=1
+endif
+
+# print real bandwidth
+ifdef PRINT_ACCURATE_RESULT
+COMPILE += -DPRINT_ACCURATE_RESULT
+endif
+
+# systrace 
+ifdef SYSTRACE
+COMPILE += -DSYSTRACE -w
+endif
+
 INCS =	bench.h lib_mem.h lib_tcp.h lib_udp.h stats.h timing.h
 
 SRCS =  bw_file_rd.c bw_mem.c bw_mmap_rd.c bw_pipe.c bw_tcp.c bw_udp.c	\

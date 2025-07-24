@@ -71,7 +71,7 @@ main(int ac, char **av)
 			      warmup, repetitions);
 		}
 	} else {
-		for (i = optind + 1; i < ac; ++i) {
+		for (i = optind + 1; i < ac; ++i) { //support multible len [stride...]
 			stride = bytes(av[i]);
 			fprintf(stderr, "\"stride=%d\n", stride);
 			for (range = LOWER; range <= len; range = step(range)) {

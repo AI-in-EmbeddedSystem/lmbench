@@ -489,6 +489,13 @@ benchmp_parent(	int response,
 	/* send 'exit' signals */
 	write(exit_signal, results, parallel * sizeof(char));
 
+#ifdef PRINT_ACCURATE_RESULT
+	for (j = 0; j < merged_results->N; ++j) {
+		if (merged_results->v[j].n > 1)
+			fprintf(stderr, "merged_results[%d] = [%d %d]\n", j, merged_results->v[j].n, merged_results->v[j].u);
+	}
+#endif
+
 	/* Compute median time; iterations is constant! */
 	set_results(merged_results);
 
@@ -1772,3 +1779,50 @@ gettimeofday(struct timeval *tv, struct timezone *tz)
 	return (0);
 }
 #endif
+
+
+#ifdef SYSTRACE
+static int g_trace_marker_fd = -1;
+
+static int get_trace_marker_fd() {
+  if (g_trace_marker_fd == -1) {
+    g_trace_marker_fd = open("/sys/kernel/tracing/trace_marker", O_CLOEXEC | O_WRONLY);
+    if (g_trace_marker_fd == -1) {
+      g_trace_marker_fd = open("/sys/kernel/debug/tracing/trace_marker", O_CLOEXEC | O_WRONLY);
+    }
+  }
+  return g_trace_marker_fd;
+}
+
+#define WRITE_OFFSET   64
+void trace_begin(const char* message) {
+  int trace_marker_fd = get_trace_marker_fd();
+  if (trace_marker_fd == -1) {
+    return;
+  }
+
+  // If bionic tracing has been enabled, then write the message to the
+  // kernel trace_marker.
+  int length = strlen(message) + WRITE_OFFSET;
+  char buf[length];
+  sprintf(buf, "B|%d|%s lmbench", getpid(), message);
+
+  write(trace_marker_fd, buf, length);
+}
+
+void trace_end(const char* message) {
+
+  int trace_marker_fd = get_trace_marker_fd();
+  if (trace_marker_fd == -1) {
+    return;
+  }
+
+  int length = strlen(message) + WRITE_OFFSET;
+  char buf[length];
+
+  sprintf(buf, "E|%d|%s lmbench", getpid(), message);
+
+  write(trace_marker_fd, buf, length);
+}
+#endif
+ls 

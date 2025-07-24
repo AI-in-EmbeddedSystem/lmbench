@@ -320,4 +320,9 @@ extern int handle_scheduler(int childno, int benchproc, int nbenchprocs);
 extern char *rpc_xact_1();
 extern char *client_rpc_xact_1();
 
+#ifdef SYSTRACE
+extern void trace_begin(const char* message);
+extern void trace_end();
+#endif
+
 #endif /* _BENCH_H */

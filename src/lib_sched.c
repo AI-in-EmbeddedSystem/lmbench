@@ -47,6 +47,10 @@ handle_scheduler(int childno, int benchproc, int nbenchprocs)
 {
 	int	cpu = 0;
 	char*	sched = getenv("LMBENCH_SCHED");
+
+#ifdef _DEBUG
+	fprintf(stderr, "LMBENCH_SCHED %s\n", sched); 
+#endif
 	
 	if (!sched || strcasecmp(sched, "DEFAULT") == 0) {
 		/* do nothing.  Allow scheduler to control placement */
@@ -231,9 +235,10 @@ sched_pin(int cpu)
 	}
 	retval = sched_setaffinity(0, sz * sizeof(unsigned long), mask);
 	if (retval < 0) perror("sched_setaffinity:");
+
 #ifdef _DEBUG
-	fprintf(stderr, "sched_pin(%d): pid=%d, returning %d\n", cpu, (int)getpid(), retval);
-#endif /* _DEBUG */
+	fprintf(stderr, "sched_pin(%d)(%lX): pid=%d, returning %d\n", cpu, *mask, (int)getpid(), retval);
+#endif
 
 #endif
 	return retval;
